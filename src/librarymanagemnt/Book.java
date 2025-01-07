@@ -20,8 +20,8 @@ public class Book {
         this.totalCopies = totalCopies;//for begenning totalCopies = avaibleCopies
     }
 
-    public void displayBook() {
-        System.out.println("Title: " + title + ", Author: " + author
+    public void displayBook(int order) {
+        System.out.println("Order: " +order+ " Title: " + title + ", Author: " + author
                 + ", Available Copies: " + avaibleCopies
                 + ", Total Copies: " + totalCopies);
     }

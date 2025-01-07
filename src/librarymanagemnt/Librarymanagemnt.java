@@ -51,12 +51,6 @@ public class Librarymanagemnt {
                     library.registerUser(new User(userName, email));
                     break;
                 case 3://borrow a book
-                    System.out.print("Enter book title: ");
-                    String bookTitle = input.nextLine();
-                    Book book = library.findBookByTitle(bookTitle);
-                    if (book == null) {
-                        break;
-                    }
 
                     System.out.print("Enter user email: ");
                     String userEmail = input.nextLine();
@@ -65,21 +59,34 @@ public class Librarymanagemnt {
                         break;
                     }
 
-                    library.borrowBook(user, book, LocalDate.now());
-                    break;
-
-                case 4://return a book
-                    System.out.print("Enter book title: ");
-                    bookTitle = input.nextLine();
-                    book = library.findBookByTitle(bookTitle);
+                    System.out.print("Enter Book Title: ");
+                    String bookTitle = input.nextLine();
+                    
+                    System.out.print("Enter Book Author: ");
+                    String bookAuthor = input.nextLine();
+                    Book book = library.findBookByTitleAndAuthor(bookTitle, bookAuthor);
                     if (book == null) {
                         break;
                     }
 
+                    library.borrowBook(user, book, LocalDate.now());
+                    break;
+
+                case 4://return a book
                     System.out.print("Enter user email: ");
                     userEmail = input.nextLine();
                     user = library.findUserByEmail(userEmail);
                     if (user == null) {
+                        break;
+                    }
+                    
+                    System.out.print("Enter book Title: ");
+                    bookTitle = input.nextLine();
+                    
+                    System.out.print("Enter Book Author: ");
+                    bookAuthor = input.nextLine();
+                    book = library.findBookByTitleAndAuthor(bookTitle, bookAuthor);
+                    if (book == null) {
                         break;
                     }
 

@@ -48,11 +48,12 @@ public class Library {
         return null;
     }
 
-    public Book findBookByTitle(String title) {
+    public Book findBookByTitleAndAuthor(String title, String author) {
         for (int i = 0; i < shelfSize; i++) {
             for (int j = 0; j < shelfCapacity; j++) {
                 if (shelves[i][j] != null
-                        && shelves[i][j].getTitle().equalsIgnoreCase(title)) {
+                        && shelves[i][j].getTitle().equalsIgnoreCase(title)
+                        && shelves[i][j].getAuthor().equalsIgnoreCase(author)) {
                     return shelves[i][j];
                 }
             }
@@ -88,9 +89,9 @@ public class Library {
         }
 
         bookCount += newBook.getTotalCopies();
-        
+
         if (bookCount > libraryCapacity) {
-            int requiredSize = bookCount-libraryCapacity;
+            int requiredSize = bookCount - libraryCapacity;
             expandBookArray();
             int incrementedShelve = expandShelves(requiredSize);
             System.out.println("Built " + incrementedShelve + " new shelves to accomodate new books. ");
@@ -166,6 +167,17 @@ public class Library {
             }
             transactions[transactionCount++] = new Transaction(user, book, "Borrow", date);
             System.out.println("Transaction recorded: Borrow on " + date);
+            // clear the place of the existed book from shelf.
+            for (int i = 0; i < shelves.length; i++) {
+                for (int j = 0; j < shelfCapacity; j++) {
+                    if (shelves[i][j] != null
+                            && shelves[i][j].getTitle().equalsIgnoreCase(book.getTitle())
+                            && shelves[i][j].getAuthor().equalsIgnoreCase(book.getAuthor())) {
+                        shelves[i][j] = null;
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -176,6 +188,15 @@ public class Library {
             }
             transactions[transactionCount++] = new Transaction(user, book, "Return", date);
             System.out.println("Transaction recorded: Return on " + date);
+            
+            for (int i = 0; i < shelves.length; i++) {
+                for (int j = 0; j < shelfCapacity; j++) {
+                    if (shelves[i][j] == null) {
+                        shelves[i][j] = book;
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -185,7 +206,7 @@ public class Library {
             System.out.println("Shelf " + (i + 1) + ":");
             for (int j = 0; j < shelfCapacity; j++) {
                 if (shelves[i][j] != null) {
-                    shelves[i][j].displayBook();
+                    shelves[i][j].displayBook(j+1);
                 }
             }
         }
@@ -227,13 +248,13 @@ public class Library {
     }
 
     public int expandShelves(int requiredSize) {
-        int requiredShelveSize = requiredSize%4 == 0 ? requiredSize/4 : requiredSize/4+1;
+        int requiredShelveSize = requiredSize % 4 == 0 ? requiredSize / 4 : requiredSize / 4 + 1;
         Book[][] newShelves = new Book[shelves.length + requiredShelveSize][shelfCapacity];
         for (int i = 0; i < shelves.length; i++) {
             newShelves[i] = shelves[i];
         }
         shelves = newShelves;
-        
+
         return requiredShelveSize;
     }
 }
