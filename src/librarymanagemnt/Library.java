@@ -18,19 +18,20 @@ public class Library {
     public static int totalUsers = 0;
 
     private Book[][] shelves; // for shelves
-    private int shelfCount;   // shelves number
     private static final int shelfCapacity = 4;
-//(Book[] books, int bookCount, User[] users, int userCount, Transaction[] transactions, int transactionCount -->parametreler
+    private static int libraryCapacity = 40;
+    private static int shelfSize = 10;
 
+//(Book[] books, int bookCount, User[] users, int userCount, Transaction[] transactions, int transactionCount -->parametreler
     public Library() {
-        books = new Book[40]; //total capacity of library 
+        books = new Book[libraryCapacity]; //total capacity of library 
         bookCount = 0;
         users = new User[10]; //for begenning
         userCount = 0;
         transactions = new Transaction[50]; //for begenning
         transactionCount = 0;
         shelves = new Book[10][shelfCapacity];
-        shelfCount = 1;
+
     }
 
     public int getUserCount() {
@@ -48,7 +49,7 @@ public class Library {
     }
 
     public Book findBookByTitle(String title) {
-        for (int i = 0; i < shelfCount; i++) {
+        for (int i = 0; i < shelfSize; i++) {
             for (int j = 0; j < shelfCapacity; j++) {
                 if (shelves[i][j] != null
                         && shelves[i][j].getTitle().equalsIgnoreCase(title)) {
@@ -77,74 +78,48 @@ public class Library {
 
     }
 
-    private boolean isCapacityExceed(int totalBooks, int bookCount) {
-
-        return false;
-
-    }
-
-    private int getCurrentSize() {
-        int size = 0;
-        for (int i = 0; i < books.length; i++) {
-            if (books[i] != null) {
-                size++;
-            }
-        }
-        return size;
-    }
-
     // adding book
-    public void addBook(Book book) {
-        Book existedBook = getExistedBook(book);
-        //write private function that get current size of the library according to total copies
-        int currentSize = getCurrentSize();
-        if (existedBook != null) {//know we have to check books with size integer its easy 
-            existedBook.setTotalCopies(existedBook.getTotalCopies()+book.getTotalCopies());
-            existedBook.setAvaibleCopies(existedBook.getAvaibleCopies()+book.getTotalCopies());
-            System.out.println("Book is already exist. Copy number updated : "+book.getTitle()  );
-        }else{
-            if (book.getTotalCopies()+currentSize <= 40) {
-                
-            }else{
-                System.out.println("Library is full! ");
-            }
+    public void addBook(Book newBook) {
+        Book existedBook = getExistedBook(newBook);
+        if (existedBook != null) {
+            existedBook.setTotalCopies(existedBook.getTotalCopies() + newBook.getTotalCopies());
+            existedBook.setAvaibleCopies(existedBook.getAvaibleCopies() + newBook.getTotalCopies());
+            System.out.println("Book is already exist. Copy number updated : " + newBook.getTitle());
         }
+
+        bookCount += newBook.getTotalCopies();
         
+        if (bookCount > libraryCapacity) {
+            int requiredSize = bookCount-libraryCapacity;
+            expandBookArray();
+            int incrementedShelve = expandShelves(requiredSize);
+            System.out.println("Built " + incrementedShelve + " new shelves to accomodate new books. ");
+            libraryCapacity += bookCount;
+        }
+
         for (int i = 0; i < books.length; i++) {
             if (books[i] == null) {
-                books[i]=book;
-                bookCount += book.getTotalCopies();
-                System.out.println("New book added: "+book.getTitle());
+                if (existedBook == null) {
+                    books[i] = newBook;
+                }
+                System.out.println("New book added: " + newBook.getTitle());
+                break;
             }
         }
 
         // adding new book
-        for (int i = 0; i < shelfCount; i++) {
+        int newBookSize = newBook.getTotalCopies();
+        for (int i = 0; i < shelves.length; i++) {
             for (int j = 0; j < shelfCapacity; j++) {
                 if (shelves[i][j] == null) {
-                    shelves[i][j] = book;
-                    System.out.println("Book added to shelf " + (i + 1) + ": " + book.getTitle());
-                    return;
+                    shelves[i][j] = newBook;
+                    System.out.println("Book added to shelf " + (i + 1) + " and in order of " + (j + 1) + " : " + newBook.getTitle());
+                    if (--newBookSize == 0) {
+                        return;
+                    }
                 }
             }
         }
-
-        // Tüm raflar doluysa yeni raf ekle
-        if (shelfCount == shelves.length) {
-            expandShelves();
-        }
-        shelves[shelfCount][0] = book; // Yeni rafa kitabı ekle
-        shelfCount++;
-        bookCount += book.getTotalCopies();//buraya sonra bi bak
-        System.out.println("New shelf created. Book added: " + book.getTitle());
-    }
-
-    public void expandShelves() {
-        Book[][] newShelves = new Book[shelves.length * 2][shelfCapacity];
-        for (int i = 0; i < shelves.length; i++) {
-            newShelves[i] = shelves[i];
-        }
-        shelves = newShelves;
     }
 
     public boolean isUserNameInvalid(String username) {
@@ -206,7 +181,7 @@ public class Library {
 
     public void displayBooks() {
         System.out.println("\nBooks in the Library:");
-        for (int i = 0; i < shelfCount; i++) {
+        for (int i = 0; i < shelfSize; i++) {
             System.out.println("Shelf " + (i + 1) + ":");
             for (int j = 0; j < shelfCapacity; j++) {
                 if (shelves[i][j] != null) {
@@ -228,11 +203,11 @@ public class Library {
     }
 
     private void expandBookArray() {
-        Book[] newBooks = new Book[books.length * 2];
+        Book[] expendedBookList = new Book[books.length * 2];
         for (int i = 0; i < books.length; i++) {
-            newBooks[i] = books[i];
+            expendedBookList[i] = books[i];
         }
-        books = newBooks;
+        books = expendedBookList;
     }
 
     private void expandUserArray() {
@@ -249,5 +224,16 @@ public class Library {
             newTransactions[i] = transactions[i];
         }
         transactions = newTransactions;
+    }
+
+    public int expandShelves(int requiredSize) {
+        int requiredShelveSize = requiredSize%4 == 0 ? requiredSize/4 : requiredSize/4+1;
+        Book[][] newShelves = new Book[shelves.length + requiredShelveSize][shelfCapacity];
+        for (int i = 0; i < shelves.length; i++) {
+            newShelves[i] = shelves[i];
+        }
+        shelves = newShelves;
+        
+        return requiredShelveSize;
     }
 }
