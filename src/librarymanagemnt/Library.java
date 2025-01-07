@@ -97,15 +97,24 @@ public class Library {
     public void addBook(Book book) {
         Book existedBook = getExistedBook(book);
         //write private function that get current size of the library according to total copies
-        int size = getCurrentSize();
+        int currentSize = getCurrentSize();
         if (existedBook != null) {//know we have to check books with size integer its easy 
             existedBook.setTotalCopies(existedBook.getTotalCopies()+book.getTotalCopies());
             existedBook.setAvaibleCopies(existedBook.getAvaibleCopies()+book.getTotalCopies());
+            System.out.println("Book is already exist. Copy number updated : "+book.getTitle()  );
         }else{
-            if (book.getTotalCopies()+size <= 40) {
+            if (book.getTotalCopies()+currentSize <= 40) {
                 
             }else{
                 System.out.println("Library is full! ");
+            }
+        }
+        
+        for (int i = 0; i < books.length; i++) {
+            if (books[i] == null) {
+                books[i]=book;
+                bookCount += book.getTotalCopies();
+                System.out.println("New book added: "+book.getTitle());
             }
         }
 
@@ -126,7 +135,7 @@ public class Library {
         }
         shelves[shelfCount][0] = book; // Yeni rafa kitabı ekle
         shelfCount++;
-        bookCount += book.;
+        bookCount += book.getTotalCopies();//buraya sonra bi bak
         System.out.println("New shelf created. Book added: " + book.getTitle());
     }
 

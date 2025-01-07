@@ -31,7 +31,7 @@ public class Librarymanagemnt {
                     String author = input.nextLine();
                     System.out.print("Enter total copies: ");
                     int totalCopies = input.nextInt();
-                    library.add1Book(new Book(title, author, totalCopies, totalCopies));
+                    library.addBook(new Book(title, author, totalCopies, totalCopies));
                     break;
 
                 case 2:
