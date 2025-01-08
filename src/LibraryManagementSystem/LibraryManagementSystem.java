@@ -1,9 +1,9 @@
-package librarymanagemnt;
+package LibraryManagementSystem;
 
 import java.util.Scanner;
 import java.time.LocalDate;
 
-public class Librarymanagemnt {
+public class LibraryManagementSystem {
 
     public static void main(String[] args) {
         Library library = new Library();

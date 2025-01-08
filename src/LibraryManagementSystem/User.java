@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package librarymanagemnt;
+package LibraryManagementSystem;
 
 public class User {
 
@@ -51,7 +51,7 @@ public class User {
     public void setBorrowedCount(int borrowedCount) {
         this.borrowedCount = borrowedCount;
     }
-
+    //borrowing book from library
     public boolean borrowingBook(Book book) {
         if (borrowedCount >= 3) {
             System.out.println("Error: " + name + " has already borrowed 3 books.");
@@ -67,7 +67,7 @@ public class User {
         book.borrowBook();
         return true;
     }
-
+    //returning book to library
     public boolean returnBook(Book book) {
         for (int i = 0; i < borrowedCount; i++) {
             if (borrowedBooks[i].equals(book)) {
